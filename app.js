@@ -4755,7 +4755,7 @@ async function importTextToFull(text){
   updateKeyFromAllNotes();
   renderAll();
   goToSection("Full");
-
+}
 
 // ----------------------
 // ✅ IMPORT: MIDI (.mid/.midi) -> Full -> Cards (with chord slots)
