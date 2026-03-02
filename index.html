@@ -551,58 +551,60 @@
     .fullPillOverlay input.songPartPill{ pointer-events:auto; }
 
     /* ===== Full Page (section blocks) ===== */
-    .fullSectionEditor{
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-      padding:10px;
-    }
-    .fullSectionCard{
-      background:#fff;
-      border:1px solid rgba(0,0,0,.10);
-      border-radius:18px;
-      padding:12px 12px 10px;
-      box-shadow:0 6px 18px rgba(0,0,0,.05);
-    }
-    .fullSectionHead{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:2px 2px 10px;
-    }
-    .fullSectionHead .fullBreakLine{
-      flex:1;
-      height:3px;
-      background:#d9d9d9;
-      border-radius:99px;
-    }
+ .fullSectionEditor{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  padding:16px 12px 120px; /* bottom space */
+}
+
+/* REMOVE card look completely */
+.fullSectionCard{
+  border:none;
+  background:transparent;
+  box-shadow:none;
+  padding:0;
+  border-radius:0;
+}
+   .fullSectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin:10px 0 6px;
+} 
+ .fullSectionHead .fullBreakLine{
+  flex:1;
+  height:2px;
+  background:#d9d9d9;
+  border-radius:99px;
+}
     .fullSectionHead input.songPartPill{
       flex:0 1 52%;
       max-width:520px;
     }
-    textarea.fullSectionText{
-      width:100%;
-      min-height:160px;
-      resize:vertical;
-      border:1px solid rgba(0,0,0,.12);
-      border-radius:16px;
-      padding:14px;
-      font-size:18px;
-      line-height:1.4;
-      background:#fff;
-      outline:none;
-    }
+   textarea.fullSectionText{
+  width:100%;
+  min-height:160px;
+  resize:none;
+  border:none;
+  border-radius:0;
+  padding:0 4px;
+  font-size:18px;
+  line-height:1.5;
+  background:transparent;
+  outline:none;
+}
     textarea.fullSectionText:focus{
       border-color:rgba(0,0,0,.22);
       box-shadow:0 0 0 3px rgba(255,235,59,.25);
     }
-    .fullSectionActions{
-      display:flex;
-      justify-content:center;
-      gap:12px;
-      margin-top:10px;
-      padding-bottom:2px;
-    }
+  .fullSectionActions{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin:14px 0 0;
+}
 
     /* Ensure + / × controls sit above textarea text as well */
     .fullPillOverlay .breakActions{ z-index:6; }
