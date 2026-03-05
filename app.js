@@ -8690,16 +8690,17 @@ if (window.visualViewport) {
   const updateDock = () => {
     if(!dock) return;
 
-    const viewportHeight = window.visualViewport.height;
-    const windowHeight = window.innerHeight;
+    const vv = window.visualViewport;
 
-    const keyboardHeight = Math.max(0, windowHeight - viewportHeight);
+// how much of the bottom of the layout viewport is covered (keyboard)
+const overlap = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
 
-    dock.style.transform = `translateY(-${keyboardHeight}px)`;
+dock.style.transform = `translateY(-${overlap}px)`;
   };
 
   visualViewport.addEventListener("resize", updateDock);
   visualViewport.addEventListener("scroll", updateDock);
 
+  updateDock();
 }
 })();
