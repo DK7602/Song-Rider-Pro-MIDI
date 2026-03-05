@@ -8680,5 +8680,26 @@ function showBootError(err){
 
 // IMPORTANT: async errors won't be caught by try/catch unless we handle the Promise.
 init().catch(showBootError);
+/***********************
+KEEP RHYME BOX ABOVE KEYBOARD
+***********************/
+if (window.visualViewport) {
 
+  const dock = document.getElementById("rhymeDock");
+
+  const updateDock = () => {
+    if(!dock) return;
+
+    const viewportHeight = window.visualViewport.height;
+    const windowHeight = window.innerHeight;
+
+    const keyboardHeight = Math.max(0, windowHeight - viewportHeight);
+
+    dock.style.transform = `translateY(-${keyboardHeight}px)`;
+  };
+
+  visualViewport.addEventListener("resize", updateDock);
+  visualViewport.addEventListener("scroll", updateDock);
+
+}
 })();
