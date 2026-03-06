@@ -3055,7 +3055,7 @@ function grandPianoNote(ctx, freq, durMs, vel=0.9){
 
   // Main envelope (slightly snappier than Piano)
   const env = ctx.createGain();
-  const peak = 0.072 * clamp(vel, 0.2, 1.0);
+  const peak = 085 * clamp(vel, 0.2, 1.0);
   env.gain.setValueAtTime(0.0001, t0);
   env.gain.exponentialRampToValueAtTime(peak, t0 + 0.006);
   env.gain.setValueAtTime(peak * 0.88, t0 + 0.05);
