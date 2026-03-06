@@ -2969,7 +2969,7 @@ function pianoNote(ctx, freq, durMs, vel=0.9){
   o.detune.value = 0;
 
   const g = ctx.createGain();
-  const peak = 0.055 * clamp(vel, 0.2, 1.0); // ✅ volume trim (was 0.11)
+  const peak = 0.033 * clamp(vel, 0.2, 1.0);
 
   g.gain.setValueAtTime(0.0001, t0);
   g.gain.exponentialRampToValueAtTime(peak, t0 + 0.008);
