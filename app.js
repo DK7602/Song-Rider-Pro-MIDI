@@ -8438,18 +8438,20 @@ function notesRedo(){
 
 function applyNotesEditorDefaults(){
   if(!el.notesEditor || !state.project) return;
-  const color = state.project.notesColor || state.notesDefaultColor || "#151515";
-  if(el.notesTextColor) el.notesTextColor.value = color;
 
-  const hasStyledContent = !!String(el.notesEditor.innerHTML || "").trim();
-  if(hasStyledContent){
-    // Important: do not set editor-level color once content exists.
-    // Doing so makes previously typed lines inherit the newly picked color.
-    el.notesEditor.style.removeProperty('color');
-  }else{
-    // Empty editor can still use the selected default color for first typed text.
-    el.notesEditor.style.color = color;
+  const color = state.project.notesColor || state.notesDefaultColor || "#151515";
+
+  if(el.notesTextColor){
+    el.notesTextColor.value = color;
   }
+
+  // Ensure new typing always uses the selected color
+  el.notesEditor.style.color = color;
+
+  try{
+    document.execCommand('styleWithCSS', false, true);
+    document.execCommand('foreColor', false, color);
+  }catch{}
 }
 
 function sanitizeNotesHtml(html){
