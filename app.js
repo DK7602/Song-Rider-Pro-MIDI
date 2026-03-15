@@ -9314,8 +9314,23 @@ function deleteSectionPage(sec){
   try{ delete state.project.sectionTitles[sec]; }catch{}
 
   if(isBase){
-    // Base pages always remain (we just clear them)
-    return;
+  // Mark base page as deleted so it doesn't regenerate
+  if(!state.project.deletedBaseSections.includes(sec)){
+    state.project.deletedBaseSections.push(sec);
+  }
+
+  // Remove from visible pages
+  state.project.enabledSections =
+    state.project.enabledSections.filter(s => s !== sec);
+
+} else if(isExtra){
+
+  // Remove extra page completely
+  state.project.extraSections =
+    state.project.extraSections.filter(s => s !== sec);
+
+  state.project.enabledSections =
+    state.project.enabledSections.filter(s => s !== sec);
   }
 
   // EXTRA pages: remove the page itself
