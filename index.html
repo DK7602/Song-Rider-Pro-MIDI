@@ -1344,17 +1344,18 @@
         </div>
 
         <div class="row" style="display:flex;align-items:center;gap:10px;flex-wrap:nowrap;border-top:1px solid rgba(0,0,0,.06);">
-          <select id="sortSelect" style="padding:8px 10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-weight:900;height:34px;">
-            <option value="az">A–Z</option>
-            <option value="recent">Recent</option>
-          </select>
+  <select id="sortSelect" style="padding:8px 10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-weight:900;height:34px;">
+    <option value="az">A–Z</option>
+    <option value="recent">Recent</option>
+  </select>
 
-          <select id="projectSelect" style="padding:8px 10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-weight:900;height:34px;flex:1;min-width:0;"></select>
-          <button class="iconCircle" id="newProjectBtn" title="New Project">＋</button>
-          <button class="iconCircle" id="renameProjectBtn" title="Rename Project">✏️</button>
-          <button class="iconCircle" id="deleteProjectBtn" title="Delete Project">Ⓧ</button>
-        </div>
-
+  <select id="projectSelect" style="padding:8px 10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-weight:900;height:34px;flex:1;min-width:0;"></select>
+  <button class="iconCircle" id="cloudSaveBtn" title="Save current project to cloud">☁</button>
+  <button class="iconCircle" id="cloudLoadBtn" title="Load project from cloud">⇩</button>
+  <button class="iconCircle" id="newProjectBtn" title="New Project">＋</button>
+  <button class="iconCircle" id="renameProjectBtn" title="Rename Project">✏️</button>
+  <button class="iconCircle" id="deleteProjectBtn" title="Delete Project">Ⓧ</button>
+</div>
         <div class="row" style="align-items:flex-start;border-top:1px solid rgba(0,0,0,.06);flex-direction:column;gap:8px;">
           <div id="nowPlaying" style="width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#666;font-weight:900;">
             —
@@ -1441,6 +1442,7 @@
   window.pdfjsLib = pdfjsLib; // <-- makes your existing app.js code work unchanged
 </script>
 <!-- cache-buster -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./app.js?v=BR5"></script>
 
 <script>
