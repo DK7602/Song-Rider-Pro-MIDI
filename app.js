@@ -1187,7 +1187,7 @@ CLOUD (SUPABASE) - PHASE 1
 Manual Save / Load only
 ***********************/
 const SUPABASE_URL = "https://nuezufupwutnuxhkblyi.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = sb_publishable_8KAFpbPpQId8zS3v7CjlmA_ZooXlnxQ
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_8KAFpbPpQId8zS3v7CjlmA_ZooXlnxQ";
 
 let sb = null;
 
