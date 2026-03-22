@@ -207,6 +207,8 @@ saveBtn: $("saveBtn"),
 
   sortSelect: $("sortSelect"),
   projectSelect: $("projectSelect"),
+    cloudSaveBtn: $("cloudSaveBtn"),
+  cloudLoadBtn: $("cloudLoadBtn"),
   newProjectBtn: $("newProjectBtn"),
   renameProjectBtn: $("renameProjectBtn"),
   deleteProjectBtn: $("deleteProjectBtn"),
@@ -1180,7 +1182,140 @@ function newLine(){
 }
   const LS_KEY = "songrider_v25_projects";
 const LS_CUR = "songrider_v25_currentProjectId";
+/***********************
+CLOUD (SUPABASE) - PHASE 1
+Manual Save / Load only
+***********************/
+const SUPABASE_URL = "https://nuezufupwutnuxhkblyi.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = sb_publishable_8KAFpbPpQId8zS3v7CjlmA_ZooXlnxQ
 
+let sb = null;
+
+function initCloud(){
+  try{
+    if(window.supabase && !sb){
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    }
+  }catch(err){
+    console.error("Supabase init failed:", err);
+  }
+}
+
+function flashBtn(btn, ms=900){
+  if(!btn) return;
+  btn.classList.add("savedFlash");
+  setTimeout(() => {
+    try{ btn.classList.remove("savedFlash"); }catch{}
+  }, ms);
+}
+
+function projectToCloudPayload(project){
+  return deepClone(project);
+}
+
+function cloudRowToProject(row){
+  const payload = deepClone(row?.payload || {});
+  payload.id = String(row?.id || payload.id || uuid());
+  if(!payload.name) payload.name = String(row?.title || "Untitled");
+  return normalizeProject(payload);
+}
+
+async function cloudSaveCurrentProject(){
+  try{
+    if(!state.project) return;
+    if(!sb){
+      alert("Cloud is not initialized.");
+      return;
+    }
+
+    // always keep local save first
+    upsertProject(state.project);
+
+    const row = {
+      id: state.project.id,
+      owner_id: null,
+      app_type: "srp",
+      title: String(state.project.name || "Untitled"),
+      payload: projectToCloudPayload(state.project),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await sb
+      .from("projects_cloud")
+      .upsert(row, { onConflict: "id" });
+
+    if(error) throw error;
+
+    flashBtn(el.cloudSaveBtn || el.saveBtn);
+    alert(`Cloud saved: ${state.project.name || "Untitled"}`);
+  }catch(err){
+    console.error(err);
+    alert("Cloud save failed.\n\n" + (err?.message || err));
+  }
+}
+
+async function cloudFetchProjects(){
+  if(!sb) throw new Error("Cloud is not initialized.");
+
+  const { data, error } = await sb
+    .from("projects_cloud")
+    .select("id,title,payload,updated_at,created_at")
+    .eq("app_type", "srp")
+    .order("updated_at", { ascending: false });
+
+  if(error) throw error;
+  return Array.isArray(data) ? data : [];
+}
+
+async function cloudLoadProject(){
+  try{
+    if(!sb){
+      alert("Cloud is not initialized.");
+      return;
+    }
+
+    const rows = await cloudFetchProjects();
+
+    if(!rows.length){
+      alert("No cloud projects found yet.");
+      return;
+    }
+
+    const menu = rows
+      .map((r, i) => `${i + 1}. ${r.title || "Untitled"}`)
+      .join("\n");
+
+    const pick = prompt(`Load which cloud project?\n\n${menu}`, "1");
+    if(pick === null) return;
+
+    const idx = parseInt(pick, 10) - 1;
+    if(!Number.isFinite(idx) || idx < 0 || idx >= rows.length){
+      alert("Invalid selection.");
+      return;
+    }
+
+    const selected = rows[idx];
+    const project = cloudRowToProject(selected);
+    if(!project) throw new Error("Cloud project payload was invalid.");
+
+    upsertProject(project);
+    state.project = project;
+    state.currentSection = "Full";
+
+    localStorage.setItem(LS_CUR, project.id);
+
+    closeNotesModal?.();
+    applyProjectSettingsToUI();
+    renderAll();
+    renderProjectsDropdown();
+
+    flashBtn(el.cloudLoadBtn);
+    alert(`Loaded from cloud: ${project.name || "Untitled"}`);
+  }catch(err){
+    console.error(err);
+    alert("Cloud load failed.\n\n" + (err?.message || err));
+  }
+}
 function lineHasContent(line){
   if(!line || typeof line !== "object") return false;
 
@@ -9999,7 +10134,9 @@ const v = Number.isFinite(raw) ? raw : 0;
 
   if(el.sortSelect) el.sortSelect.addEventListener("change", renderProjectsDropdown);
   if(el.projectSelect) el.projectSelect.addEventListener("change", () => loadProjectById(el.projectSelect.value));
-
+if(el.cloudSaveBtn) el.cloudSaveBtn.addEventListener("click", cloudSaveCurrentProject);
+if(el.cloudLoadBtn) el.cloudLoadBtn.addEventListener("click", cloudLoadProject);
+  
   if(el.newProjectBtn) el.newProjectBtn.addEventListener("click", () => {
     const name = prompt("New project name:", "New Song");
     if(name === null) return;
@@ -10084,7 +10221,8 @@ async function init(){
   await nextFrame();
 
   state.project = getCurrentProject();
-
+  initCloud();
+  
   // Style injections are cheap, but do them after first paint
   injectBspCardLook();
   injectHeaderMiniIconBtnStyle();
